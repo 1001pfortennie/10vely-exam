@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ten Ultimate Fan </title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+        
+        * { box-sizing: border-box; font-family: 'Kanit', sans-serif; margin: 0; padding: 0; }
+        
+        body { 
+            background-color: #F8F5F2; 
+            color: #5A456C; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background-image: radial-gradient(circle at 50% -20%, #E5D9F2, #F8F5F2); 
+            padding: 20px;
+        }
+        
+        .container { 
+            background-color: #ffffff; 
+            width: 100%; 
+            max-width: 500px; 
+            border-radius: 20px; 
+            padding: 30px; 
+            box-shadow: 0 10px 30px rgba(130, 101, 157, 0.15); 
+            border: 3px solid #E5D9F2; 
+            position: relative; 
+            text-align: center; 
+        }
+        
+        .lang-switch { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            background: #ffffff; 
+            border-radius: 20px; 
+            display: flex; 
+            overflow: hidden; 
+            border: 2px solid #E5D9F2; 
+            z-index: 10;
+        }
+        
+        .lang-btn { 
+            background: none; 
+            border: none; 
+            color: #B99CC8; 
+            padding: 5px 12px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: bold; 
+            transition: 0.3s; 
+        }
+        
+        .lang-btn.active { background-color: #82659D; color: #ffffff; }
+        
+        h1 { color: #82659D; margin-bottom: 20px; font-size: 36px; margin-top: 30px; line-height: 1.2; }
+        
+        .hide { display: none !important; }
+        
+        #start-screen, #result-screen { display: flex; flex-direction: column; align-items: center; }
+        
+        .cat-icon { font-size: 50px; margin-bottom: 10px; }
+        
+        .btn { 
+            background: #82659D; color: white; border: none; padding: 12px 30px; 
+            font-size: 18px; border-radius: 30px; cursor: pointer; transition: 0.3s; 
+            margin-top: 15px; font-weight: 500; box-shadow: 0 4px 10px rgba(130, 101, 157, 0.3);
+            width: 100%;
+        }
+        
+        .btn:hover { background: #B99CC8; box-shadow: 0 6px 15px rgba(185, 156, 200, 0.5); transform: translateY(-2px); }
+        
+        .btn-secondary { background: #E5D9F2; color: #5A456C; }
+        .btn-secondary:hover { background: #DEC0F1; }
+
+        #question-container { text-align: left; margin-top: 40px; }
+        #question-text { font-size: 20px; margin-bottom: 20px; line-height: 1.4; text-align: center; color: #82659D; font-weight: 500; }
+        
+        .option-btn { 
+            display: block; width: 100%; background-color: #fcfcfc; color: #5A456C; 
+            border: 2px solid #DEC0F1; padding: 15px; margin-bottom: 10px; 
+            border-radius: 10px; font-size: 16px; cursor: pointer; transition: 0.2s; text-align: left; 
+        }
+        
+        .option-btn:hover { border-color: #82659D; background-color: #E5D9F2; }
+        .option-btn.correct { background-color: #AA9CED; color: white; border-color: #AA9CED; }
+        .option-btn.wrong { background-color: #EBD8D0; color: #5A456C; border-color: #EBD8D0; }
+        .option-btn:disabled { cursor: not-allowed; }
+        
+        #next-btn { width: 100%; display: none; background: #B99CC8; color: white; margin-top: 20px; }
+        #next-btn:hover { background: #82659D; }
+        
+        #progress-text { color: #B99CC8; font-size: 14px; margin-bottom: 15px; text-align: center; font-weight: bold; }
+        
+        /* Thank You Card Styles */
+        #thank-you-card {
+            background: linear-gradient(135deg, #fcfcfc, #E5D9F2);
+            border: 3px dashed #B99CC8;
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            position: relative;
+        }
+
+        #thank-you-card::before, #thank-you-card::after {
+            content: "✨";
+            position: absolute;
+            font-size: 24px;
+        }
+        #thank-you-card::before { top: 15px; left: 15px; }
+        #thank-you-card::after { bottom: 15px; right: 15px; }
+
+        .score-display { font-size: 48px; font-weight: bold; color: #82659D; margin: 15px 0; text-shadow: 2px 2px 4px rgba(130, 101, 157, 0.2); }
+        .card-title { font-size: 32px; color: #5A456C; font-weight: bold; margin-bottom: 10px; }
+        .card-msg { font-size: 16px; color: #82659D; margin-top: 10px; }
+
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        <div class="lang-switch">
+            <button class="lang-btn active" id="btn-th" onclick="setLang('th')">TH</button>
+            <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+        </div>
+
+        <div id="start-screen">
+            <h1 id="ui-title">Loading...</h1>
+            <p id="ui-desc" style="color: #B99CC8; margin-bottom: 20px;"></p>
+            <button class="btn" id="ui-start-btn" onclick="startGame()"></button>
+        </div>
+
+        <div id="quiz-screen" class="hide">
+            <div id="progress-text"></div>
+            <div id="question-text"></div>
+            <div id="options-container"></div>
+            <button class="btn" id="next-btn" onclick="nextQuestion()"></button>
+        </div>
+
+        <div id="result-screen" class="hide">
+            <!-- Thank You Card Section (This part will be captured as an image) -->
+            <div id="thank-you-card">
+                <div class="card-title" id="ui-result-title"></div>
+                <div class="score-display" id="final-score">0 / 0</div>
+                <div class="card-title" id="ui-result-msg"></div>
+                <div class="card-msg" id="ui-thank-you-msg"></div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <button class="btn" id="ui-save-card-btn" onclick="saveCard()"></button>
+            <button class="btn btn-secondary" id="ui-restart-btn" onclick="restartGame()"></button>
+        </div>
+    </div>
+
+    <!-- ดึงข้อมูลคำถามมาจากไฟล์ questions.js -->
+    <script src="questions.js"></script>
+    
+    <script>
+        let currentLang = 'th';
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('btn-th').classList.toggle('active', lang === 'th');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            const ui = i18n[currentLang].ui;
+            document.getElementById('ui-title').innerHTML = ui.title;
+            document.getElementById('ui-desc').innerText = ui.desc;
+            document.getElementById('ui-start-btn').innerText = ui.startBtn;
+            document.getElementById('next-btn').innerText = ui.nextBtn;
+            document.getElementById('ui-result-title').innerText = ui.resultTitle;
+            document.getElementById('ui-result-msg').innerText = ui.resultMsg;
+            document.getElementById('ui-restart-btn').innerText = ui.restartBtn;
+            document.getElementById('ui-thank-you-msg').innerText = ui.thankYou;
+            document.getElementById('ui-save-card-btn').innerText = ui.saveCardBtn;
+
+            if (!document.getElementById('quiz-screen').classList.contains('hide')) {
+                updateQuestionUI();
+            }
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hide');
+            document.getElementById('result-screen').classList.add('hide');
+            document.getElementById('quiz-screen').classList.remove('hide');
+            currentQuestionIndex = 0;
+            score = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            isAnswered = false;
+            document.getElementById('next-btn').style.display = 'none';
+            updateQuestionUI();
+        }
+
+        function updateQuestionUI() {
+            const data = i18n[currentLang];
+            const qData = data.questions[currentQuestionIndex];
+            const totalQ = data.questions.length;
+
+            document.getElementById('progress-text').innerText = data.ui.progress
+                .replace('{current}', currentQuestionIndex + 1)
+                .replace('{total}', totalQ);
+            document.getElementById('question-text').innerText = qData.q;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = ''; 
+
+            qData.options.forEach((optionText, index) => {
+                const button = document.createElement('button');
+                button.innerText = optionText;
+                button.classList.add('option-btn');
+                
+                if (isAnswered) {
+                    button.disabled = true;
+                    if (index === qData.answer) button.classList.add('correct');
+                } else {
+                    button.onclick = () => selectAnswer(index, button);
+                }
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex, selectedBtn) {
+            if (isAnswered) return;
+            isAnswered = true;
+            const correctIndex = i18n[currentLang].questions[currentQuestionIndex].answer;
+            const buttons = document.querySelectorAll('.option-btn');
+
+            buttons.forEach((btn, index) => {
+                btn.disabled = true; 
+                if (index === correctIndex) btn.classList.add('correct'); 
+            });
+
+            if (selectedIndex === correctIndex) score++;
+            else selectedBtn.classList.add('wrong'); 
+
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < i18n[currentLang].questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+  
+function showResult() {
+            document.getElementById('quiz-screen').classList.add('hide');
+            document.getElementById('result-screen').classList.remove('hide');
+            
+            const totalQ = i18n[currentLang].questions.length;
+            document.getElementById('final-score').innerText = `${score} / ${totalQ}`;
+            
+            const ui = i18n[currentLang].ui;
+            let customMsg = "";
+            
+            if (score === totalQ) { // ได้คะแนนเต็ม (60/60)
+                customMsg = (currentLang === 'th') ? "คุณได้เป็นแฟนพันธุ์แท้ของเตนล์อย่างเป็นทางการ เก่งมาก!" : "The ultimate 10vely has arrived! Zero mistakes.";
+            } else if (score >= totalQ * 0.8) { // ได้คะแนน 80% ขึ้นไป (48-59 ข้อ)
+                customMsg = (currentLang === 'th') ? "สุดยอดเลย คุณคือ 10vely ที่จดจำรายละเอียดได้เยอะมากจริง ๆ" : "Amazing! You're a 10vely who really remembers every little detail.";
+            } else if (score >= totalQ * 0.5) { // ได้คะแนน 50% ขึ้นไป (30-47 ข้อ)
+                customMsg = (currentLang === 'th') ? "เก่งมาก! ไม่เบาเลยนะเนี่ย ถือว่าอยู่ด้วยกันมานานนะ" : "Pretty good! You must have been on this journey with Ten for quite a while.";
+            } else { // ได้คะแนนน้อยกว่า 50% (0-29 ข้อ)
+                customMsg = (currentLang === 'th') ? "ไม่เป็นไรนะ! ถือว่าได้ทบทวนความทรงจำกันใหม่ 💜" : "It's okay! Let's make more memories together 💜";
+            }
+            
+            document.getElementById('ui-result-msg').innerText = customMsg;
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        function saveCard() {
+            const card = document.getElementById('thank-you-card');
+            const originalBorder = card.style.border;
+            // Ensure background is solid for the image capture
+            card.style.background = "linear-gradient(135deg, #fcfcfc, #E5D9F2)";
+            
+            html2canvas(card, {
+                scale: 2, // High resolution
+                backgroundColor: "#F8F5F2" // Match outer body
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `10vely-ScoreCard-${score}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                card.style.border = originalBorder; // reset
+            });
+        }
+
+        window.onload = () => setLang('th');
+    </script>
+</body>
+</html>
