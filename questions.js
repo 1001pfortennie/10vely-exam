@@ -331,7 +331,7 @@ const i18n = {
                     "หัวใจ",
                     "ผีเสื้อ"
                 ],
-                "answer": 0
+                "answer": 1
             },
             {
                 "q": "คาแรกเตอร์ 'กานูเล่' (CANELE) มีลักษณะอย่างไร",
@@ -947,7 +947,7 @@ const i18n = {
                     "a heart",
                     "a butterfly"
                 ],
-                "answer": 0
+                "answer": 1
             },
             {
                 "q": "What does Ten's character 'CANELE' look like?",
